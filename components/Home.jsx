@@ -1,30 +1,62 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { isLogin, logOut } from "../utils/auth";
 
 const Home = () => {
-  const [users, setUsers] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [user, setUser] = useState({ name: "", email: "" });
+
+  const navigation = useNavigate();
+
+  useEffect(() => {
+    const authenticate = async () => {
+      const loggedIn = await isLogin();
+      if (loggedIn.auth) {
+        setUser(loggedIn.data);
+      } else {
+        navigation("/login");
+      }
+    };
+    authenticate();
+  }, []);
+
 
   useEffect(() => {
     const getUsers = async () => {
-      const users = await axios.get("http://localhost:3000/api/users");
-      const { data } = users.data;
-      setUsers(data);
+      const res = await axios.get("http://localhost:3000/api/student");
+      const { data } = res.data;
+      setStudents(data);
       console.log(data);
     };
     getUsers();
   }, []);
 
+  const handleLogout = () => {
+    logOut();
+    navigation("/login");
+    alert("Logout SuccessFull");
+  };
   return (
     <div className="flex justify-center mt-8">
       <div className="w-full max-w-[600px]">
-        <Link
-          to="/createUser"
-          className="w-[200px] h-[50px] bg-gray-600 text-white mb-4 p-3 rounded"
-        >
-          Create Users
-        </Link>
-
+        <div className="flex justify-between">
+          <Link
+            to="/create-student"
+            className="w-[150px] h-[50px] bg-gray-600 text-center text-white mb-4 p-3 rounded"
+          >
+            Create Users
+          </Link>
+          <div className="flex gap-2">
+            <h3>Hi ,<span className="font-semibold text-lg">{user.name}</span></h3>
+            <button
+              className="w-[100px] h-[50px] bg-gray-600 text-white mb-4 p-3 rounded cursor-pointer"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </div>
+        </div>
         <table className="w-full border-collapse mt-10">
           <thead>
             <tr className="gap-[10px] text-[20px]">
@@ -35,20 +67,20 @@ const Home = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td className="border p-2">{user.name}</td>
-                <td className="border p-2">{user.email}</td>
-                <td className="border p-2">{user.phone}</td>
+            {students.map((student) => (
+              <tr key={student._id}>
+                <td className="border p-2">{student.name}</td>
+                <td className="border p-2">{student.email}</td>
+                <td className="border p-2">{student.phone}</td>
                 <td className="border p-2">
                   <Link
-                    to={`/editUser/${user._id}`}
+                    to={`/edit-student/${student._id}`}
                     className="cursor-pointer bg-gray-600 p-1 rounded ml-2"
                   >
                     ✏
                   </Link>
                   <Link
-                    to={`/deleteUser/${user._id}`}
+                    to={`/delete-student/${student._id}`}
                     className="cursor-pointer bg-gray-600 p-1 rounded ml-2"
                   >
                     ❌

@@ -1,19 +1,28 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { isLogin } from "../utils/auth";
 
-const UpdateUser = () => {
+const UpdateStudent = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const navigate = useNavigate();
-  const {_id}=useParams()
-  console.log(_id);
-  
+  const { _id } = useParams();
+
+  useEffect(() => {
+    const authenticate = async () => {
+      const loggedIn = await isLogin();
+      if (!loggedIn.auth) {
+        navigate("/login");
+      }
+    };
+    authenticate();
+  }, []);
 
   useEffect(() => {
     axios
-      .get(`http://localhost:3000/api/users/${_id}`)
+      .get(`http://localhost:3000/api/student/${_id}`)
       .then((res) => {
         const { data } = res.data;
         setName(data.name);
@@ -22,26 +31,29 @@ const UpdateUser = () => {
       })
       .catch((err) => console.error("Error fetching user data:", err));
   }, [_id]);
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = { name, email, phone };
     try {
-      const res = await axios.put(`http://localhost:3000/api/users/${_id}`, data);
-      console.log("response",res);
+      const res = await axios.put(
+        `http://localhost:3000/api/student/${_id}`,
+        data
+      );
+      console.log("response", res);
 
       setName("");
       setEmail("");
       setPhone("");
       navigate("/");
     } catch (err) {
-      console.error("Error updating user data:", err);
+      console.error("Error updating Student data:", err);
     }
   };
-  
+
   return (
     <>
-      <h1 className="flex justify-center text-4xl mt-4">Update User</h1>
+      <h1 className="flex justify-center text-4xl mt-4">Update Student</h1>
       <div className="flex justify-center mt-10">
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <input
@@ -77,4 +89,4 @@ const UpdateUser = () => {
   );
 };
 
-export default UpdateUser;
+export default UpdateStudent;

@@ -2,14 +2,14 @@ import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios'; 
 
-const DeleteUser = () => {
+const DeleteStudent = () => {
   const { _id } = useParams()
   const navigate = useNavigate()
 
   
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/users/${_id}`);
+      await axios.delete(`http://localhost:3000/api/student/${_id}`);
       navigate('/');
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -21,7 +21,7 @@ const DeleteUser = () => {
     <div className='flex justify-center mt-20'>
       <div>
         <h1 className='text-4xl'>Are You Sure?</h1>
-        <p>Do you want to delete this user?</p>
+        <p>Do you want to delete this Student?</p>
         <div className='mt-4 flex justify-evenly'>
           <button
             className='p-2 rounded bg-red-500 cursor-pointer'
@@ -41,4 +41,4 @@ const DeleteUser = () => {
   );
 };
 
-export default DeleteUser;
+export default DeleteStudent;

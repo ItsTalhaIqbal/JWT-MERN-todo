@@ -1,27 +1,39 @@
-import React, { useState } from "react";
-import axios from 'axios'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-const CreateUser = () => {
+import { isLogin } from "../utils/auth";
+const CreateStudent = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
 
-const navigate=useNavigate()
-  
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const authenticate = async () => {
+      const loggedIn = await isLogin();
+      if (!loggedIn.auth) {
+        navigate("/login");
+      }
+    };
+    authenticate();
+  }, []);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = { name, email, phone };
-    const res = await axios.post("http://localhost:3000/api/users", data);
+    const res = await axios.post("http://localhost:3000/api/student", data);
     console.log(res);
-    setName("")
-    setEmail("")
-    setPhone("")
-    navigate("/")
+    setName("");
+    setEmail("");
+    setPhone("");
+    navigate("/");
   };
 
   return (
     <>
-      <h1 className="flex justify-center text-4xl mt-4">Create User</h1>
+      <h1 className="flex justify-center text-4xl mt-4">Create Student</h1>
       <div className="flex justify-center mt-10">
         <form className="flex flex-col" onSubmit={handleSubmit}>
           <input
@@ -57,4 +69,4 @@ const navigate=useNavigate()
   );
 };
 
-export default CreateUser;
+export default CreateStudent;
