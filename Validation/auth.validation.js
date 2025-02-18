@@ -1,7 +1,7 @@
 import joi from 'joi'
 
-export const userValidation = joi.object({
+export const authDataValidate= joi.object({
     name: joi.string().min(3).max(20).required(),
     email: joi.string().email().required(),
-    phone: joi.string().min(10).max(11).required(),
+    password: joi.string().min(6).required(),
 });
