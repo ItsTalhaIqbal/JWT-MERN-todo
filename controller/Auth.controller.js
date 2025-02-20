@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../schema/user.schema.js";
 
 export const signup = async (req, res) => {
-  const { name, email, password } = req;
+  const { name, email, password } = req.body;
 
   try {
     const dbUser = await User.findOne({ email });
