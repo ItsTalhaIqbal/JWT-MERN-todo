@@ -6,7 +6,7 @@ export const signup = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const dbUser = await User.findOne({ email });
+    const dbUser = await User.findOne({  });
     if (dbUser) {
       return res.status(400).send({ message: "Email already registerd" });
     }
